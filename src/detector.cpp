@@ -70,7 +70,7 @@ vector<Rect> Detector::filterLocations(vector<Rect>& foundLocations) const
 	for (auto i = foundLocations.begin(); i < foundLocations.end(); i++)
 	{
 		auto j = foundLocations.begin();
-		for (j; j < foundLocations.end(); j++)
+		for (; j < foundLocations.end(); j++)
 		{
 			if (j != i && ((*i) & (*j)) == *i)
 				break;
