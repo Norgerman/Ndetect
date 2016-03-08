@@ -5,7 +5,7 @@
 using namespace std;
 using namespace cv;
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
 	if (argc < 2)
 	{
@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	}
 	catch (const InvalidParamsException& e)
 	{
-		cout << e.what() << endl;
+		cout << e.msg << endl;
 		return -1;
 	}
 }

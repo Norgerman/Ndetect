@@ -3,15 +3,13 @@
 
 #include "stdafx.h"
 
-class InvalidParamsException : public std::exception
+using cv::String;
+using cv::Exception;
+
+class InvalidParamsException : public Exception
 {
 public:
-#if defined(WIN32) || defined(_WIN32)
-	InvalidParamsException(const char* message);
-#else
-	InvalidParamsException(const char*& message);
-#endif
-
+	InvalidParamsException(int code, const String& err, const String& func, const String& file, int line);
 	InvalidParamsException();
 };
 

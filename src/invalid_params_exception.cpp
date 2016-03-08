@@ -1,17 +1,13 @@
 #include "invalid_params_exception.h"
 
 InvalidParamsException::InvalidParamsException()
-	:exception()
+	:Exception()
 {
 
 }
 
-#if defined(WIN32) || defined(_WIN32)
-InvalidParamsException::InvalidParamsException(const char* message)
-#else
-InvalidParamsException::InvalidParamsException(const char*& message)
-#endif
-	:exception(message)
+InvalidParamsException::InvalidParamsException(int code, const String& err, const String& func, const String& file, int line)
+	: Exception(code, err, func, file, line)
 {
 
 }
