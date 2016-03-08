@@ -4,6 +4,8 @@ project(Ndetect)
 
 find_package(OpenCV REQUIRED)
 
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
 SET (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 include(cotire)
 
