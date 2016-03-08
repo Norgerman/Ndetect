@@ -6,7 +6,12 @@
 class InvalidParamsException : public std::exception
 {
 public:
+#if defined(WIN32) || defined(_WIN32)
 	InvalidParamsException(const char* message);
+#else
+	InvalidParamsException(const char*& message);
+#endif
+
 	InvalidParamsException();
 };
 
