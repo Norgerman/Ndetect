@@ -10,7 +10,6 @@ int main(int argc, char** argv)
 	if (argc < 2)
 	{
 		cout << "No picture input" << endl;
-		system("pause");
 		return -1;
 	}
 
@@ -25,5 +24,6 @@ int main(int argc, char** argv)
 	catch (const InvalidParamsException& e)
 	{
 		cout << e.what() << endl;
+		return -1;
 	}
 }
