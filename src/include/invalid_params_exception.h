@@ -1,5 +1,5 @@
-#ifndef INVALID_IMAGE_EXCEPTION
-#define INVALID_IMAGE_EXCEPTION
+#ifndef INVALID_PARAMS_EXCEPTION_H
+#define INVALID_PARAMS_EXCEPTION_H
 
 #include "stdafx.h"
 
@@ -13,4 +13,4 @@ public:
 	InvalidParamsException();
 };
 
-#endif // !INVALID_IMAGE_EXCEPTION
+#endif // !INVALID_PARAMS_EXCEPTION_H
