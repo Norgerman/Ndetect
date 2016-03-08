@@ -1,15 +1,29 @@
 #include "stdafx.h"
+#include "detector.h"
+#include <iostream>
 
 using namespace std;
 using namespace cv;
 
 int main(int argc, char** argv) 
 {
-	cout << "under construction!" << endl;
+	if (argc < 2)
+	{
+		cout << "No picture input" << endl;
+		system("pause");
+		return -1;
+	}
 
-	cout << "try to create a mat to test whether opencv link correctly!" << endl;
-
-	shared_ptr<Mat> i = make_shared<Mat>();
-
-	cout << "mat type: " << i->type() << endl;
+	try
+	{
+		Detector d(argv[1]);
+		auto result = d.detect();
+		auto resultpic = d.markOnSource(result);
+		imwrite("./source.jpg", *d.getImage());
+		imwrite("./marked.jpg", *resultpic);
+	}
+	catch (const InvalidParamsException& e)
+	{
+		cout << e.what() << endl;
+	}
 }
