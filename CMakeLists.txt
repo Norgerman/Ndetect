@@ -40,7 +40,7 @@ add_executable(ndetect ${sources} ${headers})
 target_link_libraries(ndetect ${OpenCV_LIBS})
 
 if (CMAKE_BUILD_TYPE MATCHES "Release")
-	message(STATUS "Enable all warnings");
+	message(STATUS "Enable all warnings")
 	if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 		set_target_properties(ndetect PROPERTIES COMPILE_FLAGS "/Wall")
 	elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
