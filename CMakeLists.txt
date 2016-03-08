@@ -24,9 +24,9 @@ endif()
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
 file(GLOB_RECURSE sources "${PROJECT_SOURCE_DIR}/src/*.cpp")
-file(GLOB_RECURSE headers "${PROJECT_SOURCE_DIR}/src/include/*.h")
+file(GLOB_RECURSE headers "${PROJECT_SOURCE_DIR}/include/*.h*")
 
-include_directories("${PROJECT_SOURCE_DIR}/src/include")
+include_directories("${PROJECT_SOURCE_DIR}/include")
 
 if(CMAKE_VERSION VERSION_LESS "2.8.11")
   # Add OpenCV headers location to your include paths
@@ -47,6 +47,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Release")
 	endif()
 endif()
 
-set_target_properties(ndetect PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "${PROJECT_SOURCE_DIR}/src/include/stdafx.h")
+set_target_properties(ndetect PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "${PROJECT_SOURCE_DIR}/include/stdafx.h")
 
 cotire(ndetect)
