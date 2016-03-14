@@ -6,6 +6,7 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <memory>
+#include <boost/filesystem.hpp>
 #include "make_unique.hpp"
 #include "invalid_params_exception.h"
 

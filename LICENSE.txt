@@ -21,3 +21,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 cotire: https://github.com/sakra/cotire/blob/master/license
+boost: http://www.boost.org/users/license.html

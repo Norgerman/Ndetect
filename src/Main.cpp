@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace cv;
+namespace fs = boost::filesystem;
 
 int main(int argc, char** argv)
 {
@@ -18,6 +19,10 @@ int main(int argc, char** argv)
 		Detector d(argv[1]);
 		auto result = d.detect();
 		auto resultpic = d.markOnSource(result);
+		if (!fs::exists("./test"))
+		{
+			fs::create_directory("./test");
+		}
 		imwrite("./test/source.jpg", *d.getImage());
 		imwrite("./test/marked.jpg", *resultpic);
 	}

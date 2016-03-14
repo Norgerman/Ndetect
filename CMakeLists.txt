@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Ndetect)
 
+set(Boost_USE_STATIC_LIBS ON)
+set(BOOST_ROOT "./3rd/boost")
+
+find_package(Boost 1.60.0 REQUIRED COMPONENTS filesystem system)
 find_package(OpenCV REQUIRED)
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
@@ -28,7 +32,7 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 file(GLOB_RECURSE sources "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE headers "${PROJECT_SOURCE_DIR}/include/*.h*")
 
-include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories("${PROJECT_SOURCE_DIR}/include" ${Boost_INCLUDE_DIRS})
 
 if(CMAKE_VERSION VERSION_LESS "2.8.11")
   # Add OpenCV headers location to your include paths
@@ -37,7 +41,7 @@ endif()
 
 add_executable(ndetect ${sources} ${headers})
 
-target_link_libraries(ndetect ${OpenCV_LIBS})
+target_link_libraries(ndetect ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 if (CMAKE_BUILD_TYPE MATCHES "Release")
 	message(STATUS "Enable all warnings")
