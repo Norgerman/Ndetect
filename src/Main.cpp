@@ -18,8 +18,8 @@ int main(int argc, char** argv)
 		Detector d(argv[1]);
 		auto result = d.detect();
 		auto resultpic = d.markOnSource(result);
-		imwrite("./source.jpg", *d.getImage());
-		imwrite("./marked.jpg", *resultpic);
+		imwrite("./test/source.jpg", *d.getImage());
+		imwrite("./test/marked.jpg", *resultpic);
 	}
 	catch (const InvalidParamsException& e)
 	{
