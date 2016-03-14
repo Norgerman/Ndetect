@@ -1,6 +1,7 @@
-#include "stdafx.h"
-#include "detector.h"
 #include <iostream>
+#include <boost/filesystem.hpp>
+#include "invalid_params_exception.h"
+#include "detector.h"
 
 using namespace std;
 using namespace cv;

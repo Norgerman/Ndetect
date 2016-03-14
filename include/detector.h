@@ -1,7 +1,12 @@
 #ifndef DETECTOR_H
 #define DETECTOR_H
 
-#include "stdafx.h"
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/objdetect.hpp>
+#include <memory>
+#include "invalid_params_exception.h"
 
 using namespace cv;
 using namespace std;

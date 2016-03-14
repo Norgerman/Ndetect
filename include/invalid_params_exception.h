@@ -1,7 +1,7 @@
 #ifndef INVALID_PARAMS_EXCEPTION_H
 #define INVALID_PARAMS_EXCEPTION_H
 
-#include "stdafx.h"
+#include <opencv2/core.hpp>
 
 using cv::String;
 using cv::Exception;

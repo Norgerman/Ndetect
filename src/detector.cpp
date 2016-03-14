@@ -1,4 +1,5 @@
 #include "detector.h"
+#include "make_unique.hpp"
 
 Detector::Detector(const char* filename)
 	:Detector(imread(filename))
