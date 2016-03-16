@@ -6,10 +6,13 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/objdetect.hpp>
 #include <memory>
+#include <sstream>
+#include <boost/filesystem.hpp>
 #include "invalid_params_exception.h"
 
 using namespace cv;
 using namespace std;
+namespace fs = boost::filesystem;
 
 class Detector 
 {
@@ -24,6 +27,10 @@ public:
 	const shared_ptr<Mat> getImage() const;
 	
 	const shared_ptr<Mat> markOnSource(vector<Rect>& foundLocations) const;
+
+	bool cut(vector<Rect>& foundLocations, vector<shared_ptr<Mat>>& resultSet) const;
+
+	bool cut(vector<Rect>& foundLocations, fs::path& saveDir) const;
 
 	~Detector();
 

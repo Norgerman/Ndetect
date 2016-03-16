@@ -26,6 +26,24 @@ int main(int argc, char** argv)
 		}
 		imwrite("./test/source.jpg", *d.getImage());
 		imwrite("./test/marked.jpg", *resultpic);
+
+		d.cut(result, fs::path("./test/a"));
+
+		if (!fs::exists("./test/b"))
+		{
+			fs::create_directory("./test/b");
+		}
+
+		stringstream ss;
+		vector<shared_ptr<Mat>> items;
+		d.cut(result, items);
+		for (size_t i = 0; i < items.size(); i++)
+		{
+			ss << "./test/b/" << i << ".jpg";
+			imwrite(ss.str(), *items[i]);
+			ss.clear();
+			ss.str("");
+		}
 	}
 	catch (const InvalidParamsException& e)
 	{

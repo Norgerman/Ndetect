@@ -36,6 +36,37 @@ vector<Rect> Detector::detect(Size winStride, Size padding) const
 	return filterLocations(foundLocations);
 }
 
+bool Detector::cut(vector<Rect>& foundLocations, vector<shared_ptr<Mat>>& resultSet) const
+{
+	for (auto& i : foundLocations)
+	{
+		resultSet.push_back(make_shared<Mat>((*_image)(i)));
+	}
+	return true;
+}
+
+bool Detector::cut(vector<Rect>& foundLocations, fs::path& saveDir) const
+{
+	stringstream ss;
+
+	if (!fs::exists(saveDir))
+	{
+		fs::create_directories(saveDir);
+	}
+
+	for (size_t i = 0; i < foundLocations.size(); i++)
+	{
+		Mat& img = (*_image)(foundLocations[i]);
+		fs::path filePath = saveDir;
+		ss << i << ".jpg";
+		filePath.append(ss.str());
+		ss.clear();
+		ss.str("");
+		imwrite(filePath.string(), img);
+	}
+	return true;
+}
+
 Detector::~Detector()
 {
 
