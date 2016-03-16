@@ -27,7 +27,9 @@ int main(int argc, char** argv)
 		imwrite("./test/source.jpg", *d.getImage());
 		imwrite("./test/marked.jpg", *resultpic);
 
-		d.cut(result, fs::path("./test/a"));
+		fs::path rootDir("./test/a");
+
+		d.cut(result, rootDir);
 
 		if (!fs::exists("./test/b"))
 		{
