@@ -56,7 +56,7 @@ bool Detector::cut(vector<Rect>& foundLocations, fs::path& saveDir) const
 
 	for (size_t i = 0; i < foundLocations.size(); i++)
 	{
-		Mat& img = (*_image)(foundLocations[i]);
+		const Mat& img = (*_image)(foundLocations[i]);
 		fs::path filePath = saveDir;
 		ss << i << ".jpg";
 		filePath.append(ss.str());
