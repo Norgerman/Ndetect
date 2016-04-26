@@ -1,7 +1,10 @@
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <iomanip>
 #include "invalid_params_exception.h"
 #include "detector.h"
+#include "video_loader.h"
+#include "categorizer.h"
 
 using namespace std;
 using namespace cv;
@@ -11,13 +14,55 @@ int main(int argc, char** argv)
 {
 	if (argc < 2)
 	{
-		cout << "No picture input" << endl;
+		cout << "input not found" << endl;
 		return -1;
 	}
 
 	try
 	{
-		Detector d(argv[1]);
+		auto loader = VideoLoader(argv[1]);
+		double frame = 0;
+		double millionsecond = 0;
+		auto categorizer = Categorizer();
+		auto resultSet = vector<shared_ptr<Mat>>();
+		stringstream ss;
+		Mat res;
+		while (loader.next(res, frame, millionsecond))
+		{
+			auto d = Detector(res);
+			auto result = d.detect();
+			d.cut(result, resultSet);
+			categorizer.addToGroup(resultSet, frame, millionsecond);
+			cout << "frame: " << frame << " millionsecond: " << millionsecond << endl;
+			resultSet.clear();
+		}
+		cout << "detect completed" << endl;
+		auto groups = categorizer.getGroups();
+		auto i = 0;
+		if (!fs::exists("./test"))
+			fs::create_directory("./test");
+		for (auto& g : *groups)
+		{
+			ss << "./test/g" << i;
+			string gDir = ss.str();
+			if (!fs::exists(gDir))
+			{
+				fs::create_directory(gDir);
+			}
+			for (auto& member : *g->members)
+			{
+				ss << "/" << fixed << setprecision(3) << member->millisecond / 1000 << ".jpg";
+				string filename = ss.str();
+				ss.clear();
+				ss.str(gDir);
+				ss.seekp(0, ios::end);
+				imwrite(filename, *member->value);
+			}
+			ss.clear();
+			ss.str("");
+			i++;
+		}
+		/*Detector d(argv[1]);
 		auto result = d.detect();
 		auto resultpic = d.markOnSource(result);
 		if (!fs::exists("./test"))
@@ -45,7 +90,7 @@ int main(int argc, char** argv)
 			imwrite(ss.str(), *items[i]);
 			ss.clear();
 			ss.str("");
-		}
+		}*/
 	}
 	catch (const InvalidParamsException& e)
 	{

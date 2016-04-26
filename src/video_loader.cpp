@@ -24,9 +24,9 @@ bool VideoLoader::next(Mat& img, double& framePosition, double& millisecondPosit
 	{
 		_videoCapture->set(CAP_PROP_POS_FRAMES, _framePosition);
 		*_videoCapture >> img;
-		_framePosition += INCREASEMENT;
 		framePosition = _framePosition;
 		millisecondPosition = _videoCapture->get(CAP_PROP_POS_MSEC);
+		_framePosition += INCREASEMENT;
 	}
 	else
 	{

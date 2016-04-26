@@ -17,7 +17,7 @@ Detector::Detector(const Mat& img) throw(InvalidParamsException)
 	{
 		throw InvalidParamsException(1000, "Invalid image", __func__, __FILE__, __LINE__);
 	}
-	_image = make_shared<Mat>(img);
+	_image = make_shared<Mat>(img.clone());
 	initlize();
 }
 
