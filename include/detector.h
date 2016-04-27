@@ -19,7 +19,7 @@ class Detector
 public:
 	Detector(const char* filename);
 	Detector(const string& filename);
-	Detector(const Mat& img) throw(InvalidParamsException);
+	Detector(const Mat& img);
 	Detector(const Detector& other);
 
 	vector<Rect> detect(Size winStride = Size(8, 8), Size padding = Size(32, 32)) const;

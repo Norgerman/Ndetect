@@ -11,7 +11,7 @@ Detector::Detector(const string& filename)
 {
 }
 
-Detector::Detector(const Mat& img) throw(InvalidParamsException)
+Detector::Detector(const Mat& img)
 {
 	if (!img.data)
 	{
