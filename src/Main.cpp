@@ -5,6 +5,7 @@
 #include "detector.h"
 #include "video_loader.h"
 #include "categorizer.h"
+#include "group_writer.h"
 
 using namespace std;
 using namespace cv;
@@ -38,7 +39,9 @@ int main(int argc, char** argv)
 		}
 		cout << "detect completed" << endl;
 		auto groups = categorizer.getGroups();
-		auto i = 0;
+		auto writer = GroupWriter();
+		writer.writeGroup(*groups, "./test", "g");
+		/*auto i = 0;
 		if (!fs::exists("./test"))
 			fs::create_directory("./test");
 		for (auto& g : *groups)
@@ -61,7 +64,7 @@ int main(int argc, char** argv)
 			ss.clear();
 			ss.str("");
 			i++;
-		}
+		}*/
 		/*Detector d(argv[1]);
 		auto result = d.detect();
 		auto resultpic = d.markOnSource(result);
