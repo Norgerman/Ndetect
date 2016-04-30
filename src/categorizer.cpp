@@ -1,10 +1,10 @@
 #include "categorizer.h"
 
-shared_ptr<GroupMember> makeGroupMember(const shared_ptr<Mat>& value, double frame, double millionsecond)
+shared_ptr<GroupMember> makeGroupMember(const shared_ptr<Mat>& value, double frame, double millisecond)
 {
 	shared_ptr<GroupMember> gm = make_shared<GroupMember>();
 	gm->frame = frame;
-	gm->millisecond = millionsecond;
+	gm->millisecond = millisecond;
 	gm->value = value;
 	return gm;
 }
@@ -26,14 +26,14 @@ shared_ptr<vector<shared_ptr<Group>>> Categorizer::getGroups() const
 	return _groups;
 }
 
-void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double frame, double millionsecond)
+void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double frame, double millisecond)
 {
 	if (_groups->size() == 0)
 	{
 		for (auto& e : pictures)
 		{
 			auto g = createGroup();
-			auto m = makeGroupMember(e, frame, millionsecond);
+			auto m = makeGroupMember(e, frame, millisecond);
 			g->members->push_back(m);
 			_groups->push_back(g);
 		}
@@ -44,7 +44,7 @@ void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double fra
 		{
 			bool matched = false;
 			size_t i = 0;
-			auto newMember = makeGroupMember(e, frame, millionsecond);
+			auto newMember = makeGroupMember(e, frame, millisecond);
 
 			for (; i < _groups->size(); i++)
 			{

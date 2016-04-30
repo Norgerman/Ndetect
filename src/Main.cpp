@@ -58,19 +58,32 @@ int main(int argc, char** argv)
 	{
 		auto loader = VideoLoader(arg.fileName);
 		double frame = 0;
-		double millionsecond = 0;
+		double millisecond = 0;
 		auto categorizer = Categorizer();
 		auto resultSet = vector<shared_ptr<Mat>>();
 		stringstream ss;
+		string srcDir;
 		Mat res;
-		while (loader.next(res, frame, millionsecond))
+		ss << arg.outputDir << "/source";
+		srcDir = ss.str();
+		if (!fs::exists(srcDir)) 
+		{
+			fs::create_directories(srcDir);
+		}
+
+		while (loader.next(res, frame, millisecond))
 		{
 			auto d = Detector(res);
 			auto result = d.detect();
 			d.cut(result, resultSet);
-			categorizer.addToGroup(resultSet, frame, millionsecond);
-			cout << "frame: " << frame << " millionsecond: " << millionsecond << endl;
+			categorizer.addToGroup(resultSet, frame, millisecond);
+			cout << "frame: " << frame << " millisecond: " << millisecond << endl;
+			ss << "/"  << fixed << setprecision(3) << millisecond / 1000 << ".jpg";
+			imwrite(ss.str(), res);
 			resultSet.clear();
+			ss.clear();
+			ss.str(srcDir);
+			ss.seekp(0, ios::end);
 		}
 		cout << "detect completed" << endl;
 		auto groups = categorizer.getGroups();

@@ -24,7 +24,7 @@ class Categorizer
 {
 public:
 	Categorizer();
-	void addToGroup(const vector<shared_ptr<Mat>>& pictures, double frame, double millionsecond);
+	void addToGroup(const vector<shared_ptr<Mat>>& pictures, double frame, double millisecond);
 	shared_ptr<vector<shared_ptr<Group>>> getGroups() const;
 private:
 	Scalar getMSSIM(const Mat& i1, const Mat& i2);
@@ -32,7 +32,7 @@ private:
 	shared_ptr<vector<shared_ptr<Group>>> _groups;
 };
 
-shared_ptr<GroupMember> makeGroupMember(const shared_ptr<Mat>& value, double frame, double millionsecond);
+shared_ptr<GroupMember> makeGroupMember(const shared_ptr<Mat>& value, double frame, double millisecond);
 
 shared_ptr<Group> createGroup();
 
