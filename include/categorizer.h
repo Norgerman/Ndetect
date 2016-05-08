@@ -28,7 +28,11 @@ public:
 	shared_ptr<vector<shared_ptr<Group>>> getGroups() const;
 private:
 	Scalar getMSSIM(const Mat& i1, const Mat& i2);
+	double getPSNR(const Mat& i1, const Mat& i2);
+	int getHashDiff(const Mat& src1, const Mat& src2);
 	bool isSimilar(Scalar& mssim);
+	bool isSimilar(double psnr);
+	bool isSimilar(int hash);
 	shared_ptr<vector<shared_ptr<Group>>> _groups;
 };
 

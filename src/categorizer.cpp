@@ -122,10 +122,90 @@ Scalar Categorizer::getMSSIM(const Mat& i1, const Mat& i2)
 	return mssim;
 }
 
+double Categorizer::getPSNR(const Mat& i1, const Mat& i2)
+{
+	Mat s1;
+	absdiff(i1, i2, s1);       // |I1 - I2|
+	s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
+	s1 = s1.mul(s1);           // |I1 - I2|^2
+
+	Scalar s = sum(s1);         // sum elements per channel
+
+	double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
+
+	if (sse <= 1e-10) // for small values return zero
+		return 0;
+	else
+	{
+		double  mse = sse / (double)(i1.channels() * i1.total());
+		double psnr = 10.0*log10((255 * 255) / mse);
+		return psnr;
+	}
+}
+
+int Categorizer::getHashDiff(const Mat& src1, const Mat& src2)
+{
+	Mat resize1, resize2;
+	resize(src1, resize1, cv::Size(8, 8), 0, 0, cv::INTER_CUBIC);
+	resize(src2, resize2, cv::Size(8, 8), 0, 0, cv::INTER_CUBIC);
+
+	cvtColor(resize1, resize1, CV_BGR2GRAY);
+	cvtColor(resize2, resize2, CV_BGR2GRAY);
+
+	int iAvg1 = 0, iAvg2 = 0;
+	int arr1[64], arr2[64];
+
+	for (int i = 0; i < 8; i++)
+	{
+		uchar* data1 = resize1.ptr<uchar>(i);
+		uchar* data2 = resize1.ptr<uchar>(i);
+
+		int tmp = i * 8;
+
+		for (int j = 0; j < 8; j++)
+		{
+			int tmp1 = tmp + j;
+
+			arr1[tmp1] = data1[j] / 4 * 4;
+			arr2[tmp1] = data2[j] / 4 * 4;
+
+			iAvg1 += arr1[tmp1];
+			iAvg2 += arr2[tmp1];
+		}
+	}
+
+	iAvg1 /= 64;
+	iAvg2 /= 64;
+
+	for (int i = 0; i < 64; i++)
+	{
+		arr1[i] = (arr1[i] >= iAvg1) ? 1 : 0;
+		arr2[i] = (arr2[i] >= iAvg2) ? 1 : 0;
+	}
+
+	int iDiffNum = 0;
+
+	for (int i = 0; i < 64; i++)
+		if (arr1[i] != arr2[i])
+			++iDiffNum;
+	return iDiffNum;
+
+}
+
 bool Categorizer::isSimilar(Scalar& mssim)
 {
 	int i = mssim[0] >= 0.5;
 	int j = mssim[1] >= 0.5;
 	int k = mssim[2] >= 0.5;
 	return (i + j + k) >= 2;
+}
+
+bool Categorizer::isSimilar(double psnr)
+{
+	return psnr < 20;
+}
+
+bool Categorizer::isSimilar(int hash)
+{
+	return hash <= 5;
 }
