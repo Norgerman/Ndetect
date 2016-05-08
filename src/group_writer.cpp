@@ -9,6 +9,7 @@ void GroupWriter::writeGroup(vector<shared_ptr<Group>>& groups, const string& ou
 {
 	writeGroup(groups, outputDir, groupNamePrefix, *_defaultModifier);
 }
+
 void GroupWriter::writeGroup(vector<shared_ptr<Group>>& groups, const string& outputDir, const string& groupNamePrefix, const OutputModifier& modifier)
 {
 	stringstream ss;
