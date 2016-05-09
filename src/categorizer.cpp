@@ -50,7 +50,7 @@ void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double fra
 			{
 				auto m1 = _groups->at(i)->members->at(0)->value;
 				auto src2 = e->clone();
-				resize(src2, src2, m1->size(), 0, 0, cv::INTER_CUBIC);
+				resize(src2, src2, m1->size(), 0, 0, cv::INTER_LANCZOS4);
 				auto mssim = getMSSIM(*m1, src2);
 				if (isSimilar(mssim))
 				{
