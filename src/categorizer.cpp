@@ -82,7 +82,7 @@ Scalar Categorizer::getGroupMSSIM(const Mat& pic, const Group& g)
 	auto v2 = 0;
 	for (auto& m : *g.members)
 	{
-		resize(src, src, m->value->size(), 0, 0, cv::INTER_CUBIC);
+		resize(src, src, m->value->size(), 0, 0, cv::INTER_LANCZOS4);
 		auto res = getMSSIM(src, *m->value);
 		v0 += res[0];
 		v1 += res[1];
