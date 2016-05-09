@@ -50,7 +50,7 @@ void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double fra
 			{
 				auto m1 = _groups->at(i)->members->at(0)->value;
 				auto src2 = e->clone();
-				resize(src2, src2, m1->size(), 0, 0, cv::INTER_LANCZOS4);
+				resize(src2, src2, m1->size(), 0, 0, cv::INTER_CUBIC);
 				auto mssim = getMSSIM(*m1, src2);
 				if (isSimilar(mssim))
 				{
@@ -71,6 +71,24 @@ void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double fra
 			}
 		}
 	}
+}
+
+Scalar Categorizer::getGroupMSSIM(const Mat& pic, const Group& g)
+{
+	auto src = pic.clone();
+	auto size = g.members->size();
+	auto v0 = 0;
+	auto v1 = 0;
+	auto v2 = 0;
+	for (auto& m : *g.members)
+	{
+		resize(src, src, m->value->size(), 0, 0, cv::INTER_CUBIC);
+		auto res = getMSSIM(src, *m->value);
+		v0 += res[0];
+		v1 += res[1];
+		v2 += res[2];
+	}
+	return Scalar(v0 / size, v1 / size, v2 / size);
 }
 
 Scalar Categorizer::getMSSIM(const Mat& i1, const Mat& i2)

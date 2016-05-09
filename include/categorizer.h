@@ -30,6 +30,7 @@ private:
 	Scalar getMSSIM(const Mat& i1, const Mat& i2);
 	double getPSNR(const Mat& i1, const Mat& i2);
 	int getHashDiff(const Mat& src1, const Mat& src2);
+	Scalar getGroupMSSIM(const Mat& pic, const Group& g);
 	bool isSimilar(Scalar& mssim);
 	bool isSimilar(double psnr);
 	bool isSimilar(int hash);
