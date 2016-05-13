@@ -50,9 +50,8 @@ void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double fra
 			{
 				auto m1 = _groups->at(i)->members->at(0)->value;
 				auto src2 = e->clone();
-				resize(src2, src2, m1->size(), 0, 0, cv::INTER_LANCZOS4);
-				auto mssim = getMSSIM(*m1, src2);
-				if (isSimilar(mssim))
+				auto diff = getHistDiff(*m1, src2);
+				if (isSimilar(diff))
 				{
 					matched = true;
 					break;
@@ -140,25 +139,32 @@ Scalar Categorizer::getMSSIM(const Mat& i1, const Mat& i2)
 	return mssim;
 }
 
-double Categorizer::getPSNR(const Mat& i1, const Mat& i2)
+double Categorizer::getHistDiff(const Mat& i1, const Mat& i2)
 {
-	Mat s1;
-	absdiff(i1, i2, s1);       // |I1 - I2|
-	s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
-	s1 = s1.mul(s1);           // |I1 - I2|^2
+	Mat src1, src2;
+	cvtColor(i1, src1, COLOR_BGR2HSV);
+	cvtColor(i2, src2, COLOR_BGR2HSV);
 
-	Scalar s = sum(s1);         // sum elements per channel
+	int h_bins = 50; int s_bins = 60;
+	int histSize[] = { h_bins, s_bins };
 
-	double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
+	float h_ranges[] = { 0, 180 };
+	float s_ranges[] = { 0, 256 };
 
-	if (sse <= 1e-10) // for small values return zero
-		return 0;
-	else
-	{
-		double  mse = sse / (double)(i1.channels() * i1.total());
-		double psnr = 10.0*log10((255 * 255) / mse);
-		return psnr;
-	}
+	const float* ranges[] = { h_ranges, s_ranges };
+
+	int channels[] = { 0, 1 };
+
+	MatND hist_src1;
+	MatND hist_src2;
+
+	calcHist(&src1, 1, channels, Mat(), hist_src1, 2, histSize, ranges, true, false);
+	normalize(hist_src1, hist_src1, 0, 1, NORM_MINMAX, -1, Mat());
+
+	calcHist(&src2, 1, channels, Mat(), hist_src2, 2, histSize, ranges, true, false);
+	normalize(hist_src1, hist_src1, 0, 1, NORM_MINMAX, -1, Mat());
+
+	return compareHist(hist_src1, hist_src2, HISTCMP_INTERSECT);
 }
 
 int Categorizer::getHashDiff(const Mat& src1, const Mat& src2)
@@ -218,9 +224,9 @@ bool Categorizer::isSimilar(Scalar& mssim)
 	return (i + j + k) >= 2;
 }
 
-bool Categorizer::isSimilar(double psnr)
+bool Categorizer::isSimilar(double diff)
 {
-	return psnr < 20;
+	return diff >= 11;
 }
 
 bool Categorizer::isSimilar(int hash)
