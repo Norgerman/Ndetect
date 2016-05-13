@@ -34,7 +34,8 @@ void GroupWriter::writeGroup(vector<shared_ptr<Group>>& groups, const string& ou
 				ss.clear();
 				ss.str(gDir);
 				ss.seekp(0, ios::end);
-				imwrite(filename, *member->value);
+				if (!fs::exists(filename))
+					imwrite(filename, *member->value);
 			}
 		}
 		ss.clear();
