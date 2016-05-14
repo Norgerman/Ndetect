@@ -22,3 +22,4 @@ SOFTWARE.
 
 cotire: https://github.com/sakra/cotire/blob/master/license
 boost: http://www.boost.org/users/license.html
+opencv: https://github.com/Itseez/opencv/blob/master/LICENSE
