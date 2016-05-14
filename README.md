@@ -13,6 +13,3 @@ win64 & use 64bit opencv
     ./b2 address-model=64 link=static --with-filesystem
 ```
 copy boost into 3rd/boost/include and copy stage/lib into 3rd/boost
-
-
-## Build use cmake
