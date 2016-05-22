@@ -11,7 +11,7 @@ class FaceModifier : public OutputModifier
 {
 public:
 	FaceModifier();
-	virtual bool modifier(shared_ptr<Mat> picture) const;
+	virtual bool modifier(Mat& picture) const;
 private:
 	shared_ptr<CascadeClassifier> _faceClassifier;
 };

@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 		double frame = 0;
 		double millisecond = 0;
 		auto categorizer = Categorizer();
-		auto resultSet = vector<shared_ptr<Mat>>();
+		auto resultSet = vector<Mat>();
 		stringstream ss;
 		string srcDir;
 		Mat res;

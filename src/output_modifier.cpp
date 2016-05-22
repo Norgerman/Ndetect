@@ -1,6 +1,6 @@
 #include "output_modifier.h"
 
-bool DefaultOutputModifier::modifier(shared_ptr<Mat> mat) const
+bool DefaultOutputModifier::modifier(Mat& mat) const
 {
 	return true;
 }

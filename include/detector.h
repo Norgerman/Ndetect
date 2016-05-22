@@ -24,11 +24,11 @@ public:
 
 	vector<Rect> detect(Size winStride = Size(8, 8), Size padding = Size(32, 32)) const;
 
-	const shared_ptr<Mat> getImage() const;
+	const Mat getImage() const;
 	
-	const shared_ptr<Mat> markOnSource(vector<Rect>& foundLocations) const;
+	const Mat markOnSource(vector<Rect>& foundLocations) const;
 
-	bool cut(vector<Rect>& foundLocations, vector<shared_ptr<Mat>>& resultSet) const;
+	bool cut(vector<Rect>& foundLocations, vector<Mat>& resultSet) const;
 
 	bool cut(vector<Rect>& foundLocations, fs::path& saveDir) const;
 
@@ -42,7 +42,7 @@ private:
 
 
 	unique_ptr<HOGDescriptor> _peopleDectectHog;
-	shared_ptr<Mat> _image;
+	Mat _image;
 };
 
 #endif // !DETECTOR_H

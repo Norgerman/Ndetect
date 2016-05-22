@@ -1,6 +1,6 @@
 #include "categorizer.h"
 
-shared_ptr<GroupMember> makeGroupMember(const shared_ptr<Mat>& value, double frame, double millisecond)
+shared_ptr<GroupMember> makeGroupMember(const Mat& value, double frame, double millisecond)
 {
 	shared_ptr<GroupMember> gm = make_shared<GroupMember>();
 	gm->frame = frame;
@@ -26,7 +26,7 @@ shared_ptr<vector<shared_ptr<Group>>> Categorizer::getGroups() const
 	return _groups;
 }
 
-void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double frame, double millisecond)
+void Categorizer::addToGroup(const vector<Mat>& pictures, double frame, double millisecond)
 {
 	if (_groups->size() == 0)
 	{
@@ -49,8 +49,8 @@ void Categorizer::addToGroup(const vector<shared_ptr<Mat>>& pictures, double fra
 			for (; i < _groups->size(); i++)
 			{
 				auto m1 = _groups->at(i)->members->at(0)->value;
-				auto src2 = e->clone();
-				auto diff = getHistDiff(*m1, src2);
+				auto src2 = e.clone();
+				auto diff = getHistDiff(m1, src2);
 				if (isSimilar(diff))
 				{
 					matched = true;
@@ -81,8 +81,8 @@ Scalar Categorizer::getGroupMSSIM(const Mat& pic, const Group& g)
 	auto v2 = 0;
 	for (auto& m : *g.members)
 	{
-		resize(src, src, m->value->size(), 0, 0, cv::INTER_LANCZOS4);
-		auto res = getMSSIM(src, *m->value);
+		resize(src, src, m->value.size(), 0, 0, cv::INTER_LANCZOS4);
+		auto res = getMSSIM(src, m->value);
 		v0 += res[0];
 		v1 += res[1];
 		v2 += res[2];

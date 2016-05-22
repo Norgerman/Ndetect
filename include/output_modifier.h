@@ -10,14 +10,14 @@ using namespace cv;
 class OutputModifier
 {
 public:
-	virtual bool modifier(shared_ptr<Mat> picture) const = 0;
+	virtual bool modifier(Mat& picture) const = 0;
 	virtual ~OutputModifier() {};
 };
 
 class DefaultOutputModifier : public OutputModifier
 {
 public:
-	virtual bool modifier(shared_ptr<Mat> picture) const;
+	virtual bool modifier(Mat& picture) const;
 };
 
 #endif // !OUTPUT_MODIFIER_H

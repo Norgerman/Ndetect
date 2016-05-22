@@ -12,7 +12,7 @@ typedef struct
 {
 	double frame;
 	double millisecond;
-	shared_ptr<Mat> value;
+	Mat value;
 } GroupMember;
 
 typedef struct
@@ -24,20 +24,22 @@ class Categorizer
 {
 public:
 	Categorizer();
-	void addToGroup(const vector<shared_ptr<Mat>>& pictures, double frame, double millisecond);
+	void addToGroup(const vector<Mat>& pictures, double frame, double millisecond);
 	shared_ptr<vector<shared_ptr<Group>>> getGroups() const;
 private:
 	Scalar getMSSIM(const Mat& i1, const Mat& i2);
 	double getHistDiff(const Mat& i1, const Mat& i2);
 	int getHashDiff(const Mat& src1, const Mat& src2);
 	Scalar getGroupMSSIM(const Mat& pic, const Group& g);
+
 	bool isSimilar(Scalar& mssim);
 	bool isSimilar(double diff);
 	bool isSimilar(int hash);
+
 	shared_ptr<vector<shared_ptr<Group>>> _groups;
 };
 
-shared_ptr<GroupMember> makeGroupMember(const shared_ptr<Mat>& value, double frame, double millisecond);
+shared_ptr<GroupMember> makeGroupMember(const Mat& value, double frame, double millisecond);
 
 shared_ptr<Group> createGroup();
 
