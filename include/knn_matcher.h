@@ -21,9 +21,9 @@ public:
 	void detectKeypoints(const Mat& image, vector<KeyPoint>& keypoints);
 	void extractDescriptors(const Mat& image, vector<KeyPoint>& keypoints, Mat& descriptor);   
 	void bestMatch(const Mat& queryDescriptor, Mat& trainDescriptor, vector<DMatch>& matches); 
-	void knnMatch(const Mat& queryDescriptor, Mat& trainDescriptor, vector<vector<DMatch>>& matches, int k);   // K近邻匹配  
+	void knnMatch(const Mat& queryDescriptor, Mat& trainDescriptor, vector<vector<DMatch>>& matches, int k);
 
-	void saveKeypoints(const Mat& image, const vector<KeyPoint>& keypoints, const string& saveFileName = "");  // 保存特征点  
+	void saveKeypoints(const Mat& image, const vector<KeyPoint>& keypoints, const string& saveFileName = "");
 	void saveMatches(const Mat& queryImage,
 		const vector<KeyPoint>& queryKeypoints,
 		const Mat& trainImage,
