@@ -40,27 +40,26 @@ void Categorizer::addToGroup(const vector<Mat>& pictures, double frame, double m
 	}
 	else
 	{
+		unordered_set<int> usedIndex;
 		for (auto& e : pictures)
 		{
 			bool matched = false;
-			size_t i = 0;
+			size_t mostSimilarIndex = -1;
+			double mostSimilarValue = -1;
 			auto newMember = makeGroupMember(e, frame, millisecond);
 
-			for (; i < _groups->size(); i++)
+			for (size_t i = 0; i < _groups->size(); i++)
 			{
 				auto m1 = _groups->at(i)->members->at(0)->value;
 				auto src2 = e.clone();
 				auto diff = getHistDiff(m1, src2);
-				if (isSimilar(diff))
-				{
-					matched = true;
-					break;
-				}
+				moreSimilar(mostSimilarValue, mostSimilarIndex, diff, i, usedIndex);
 			}
 
-			if (matched)
+			if (mostSimilarIndex != -1 && isSimilar(mostSimilarValue))
 			{
-				_groups->at(i)->members->push_back(newMember);
+				usedIndex.insert(mostSimilarIndex);
+				_groups->at(mostSimilarIndex)->members->push_back(newMember);
 			}
 			else
 			{
@@ -232,4 +231,72 @@ bool Categorizer::isSimilar(double diff)
 bool Categorizer::isSimilar(int hash)
 {
 	return hash <= 5;
+}
+
+void Categorizer::moreSimilar(double& currentSimilarValue, size_t& currentSimilarValueIndex,
+	const double& newValue, const size_t& newIndex,
+	const unordered_set<int>& usedIndex)
+{
+	if (usedIndex.find(newIndex) != usedIndex.end())
+		return;
+
+	if (currentSimilarValueIndex == -1)
+	{
+		currentSimilarValue = newValue;
+		currentSimilarValueIndex = newIndex;
+	}
+	else
+	{
+		if (newValue > currentSimilarValue)
+		{
+			currentSimilarValue = newValue;
+			currentSimilarValueIndex = newIndex;
+		}
+	}
+}
+
+void Categorizer::moreSimilar(int& currentSimilarValue, size_t& currentSimilarValueIndex,
+	const int& newValue, const size_t& newIndex,
+	const unordered_set<int>& usedIndex)
+{
+	if (usedIndex.find(newIndex) != usedIndex.end())
+		return;
+
+	if (currentSimilarValueIndex == -1)
+	{
+		currentSimilarValue = newValue;
+		currentSimilarValueIndex = newIndex;
+	}
+	else
+	{
+		if (newValue < currentSimilarValue)
+		{
+			currentSimilarValue = newValue;
+			currentSimilarValueIndex = newIndex;
+		}
+	}
+}
+
+void Categorizer::moreSimilar(Scalar& currentSimilarValue, size_t& currentSimilarValueIndex,
+	const Scalar& newValue, const size_t& newIndex,
+	const unordered_set<int>& usedIndex)
+{
+	if (usedIndex.find(newIndex) != usedIndex.end())
+		return;
+
+	if (currentSimilarValueIndex == -1)
+	{
+		currentSimilarValue = newValue;
+		currentSimilarValueIndex = newIndex;
+	}
+	else
+	{
+		if (((newValue[0] > currentSimilarValue[0]) + 
+			(newValue[1] > currentSimilarValue[1]) + 
+			(newValue[2] > currentSimilarValue[2])) > 2)
+		{
+			currentSimilarValue = newValue;
+			currentSimilarValueIndex = newIndex;
+		}
+	}
 }

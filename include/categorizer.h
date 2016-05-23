@@ -4,6 +4,7 @@
 #include <opencv2/imgproc.hpp>
 #include <vector>
 #include <memory>
+#include <unordered_set>
 
 using namespace std;
 using namespace cv;
@@ -35,6 +36,18 @@ private:
 	bool isSimilar(Scalar& mssim);
 	bool isSimilar(double diff);
 	bool isSimilar(int hash);
+
+	void moreSimilar(double& currentSimilarValue, size_t& currentSimilarValueIndex,
+		const double& newValue, const size_t& newIndex,
+		const unordered_set<int>& usedIndex);
+
+	void moreSimilar(int& currentSimilarValue, size_t& currentSimilarValueIndex,
+		const int& newValue, const size_t& newIndex,
+		const unordered_set<int>& usedIndex);
+
+	void moreSimilar(Scalar& currentSimilarValue, size_t& currentSimilarValueIndex,
+		const Scalar& newValue, const size_t& newIndex, 
+		const unordered_set<int>& usedIndex);
 
 	shared_ptr<vector<shared_ptr<Group>>> _groups;
 };
