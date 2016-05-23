@@ -2,9 +2,9 @@
 
 KnnMatcher::KnnMatcher()
 {
-	_detector = make_shared<xfeatures2d::SIFT>();
-	_extractor = make_shared<xfeatures2d::SIFT>();
-	_matcher = make_shared<FlannBasedMatcher>();
+	_detector = ORB::create();
+	_extractor = ORB::create();
+	_matcher = DescriptorMatcher::create("BruteForce");
 }
 
 KnnMatcher::~KnnMatcher()
@@ -39,9 +39,7 @@ void KnnMatcher::bestMatch(const Mat& queryDescriptor, Mat& trainDescriptor, std
 
 	matches.clear();
 
-	_matcher->add(vector<Mat>(1, trainDescriptor));
-	_matcher->train();
-	_matcher->match(queryDescriptor, matches);
+	_matcher->match(queryDescriptor, trainDescriptor, matches);
 
 }
 
@@ -54,43 +52,5 @@ void KnnMatcher::knnMatch(const Mat& queryDescriptor, Mat& trainDescriptor, std:
 
 	matches.clear();
 
-	_matcher->add(std::vector<Mat>(1, trainDescriptor));
-	_matcher->train();
-	_matcher->knnMatch(queryDescriptor, matches, k);
-
-}
-
-
-
-void KnnMatcher::saveKeypoints(const Mat& image, const vector<KeyPoint>& keypoints, const string& saveFileName)
-{
-	assert(!saveFileName.empty());
-
-	Mat outImage;
-	cv::drawKeypoints(image, keypoints, outImage, Scalar(255, 255, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-
-	//  
-	string saveKeypointsImgName = saveFileName + "_flann" + ".jpg";
-	imwrite(saveKeypointsImgName, outImage);
-
-}
-
-
-
-void KnnMatcher::saveMatches(const Mat& queryImage,
-	const vector<KeyPoint>& queryKeypoints,
-	const Mat& trainImage,
-	const vector<KeyPoint>& trainKeypoints,
-	const vector<DMatch>& matches,
-	const string& saveFileName)
-{
-	assert(!saveFileName.empty());
-
-	Mat outImage;
-	cv::drawMatches(queryImage, queryKeypoints, trainImage, trainKeypoints, matches, outImage,
-		Scalar(255, 0, 0), Scalar(0, 255, 255), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-
-	//  
-	string saveMatchImgName = saveFileName + "_knn" + ".jpg";
-	imwrite(saveMatchImgName, outImage);
+	_matcher->knnMatch(queryDescriptor, trainDescriptor, matches, k);
 }

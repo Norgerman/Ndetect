@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "categorizer.h"
 
 shared_ptr<GroupMember> makeGroupMember(const Mat& value, double frame, double millisecond)
@@ -19,6 +20,7 @@ shared_ptr<Group> createGroup()
 Categorizer::Categorizer()
 {
 	_groups = make_shared<vector<shared_ptr<Group>>>();
+	_matcher = ::make_unique<KnnMatcher>();
 }
 
 shared_ptr<vector<shared_ptr<Group>>> Categorizer::getGroups() const
@@ -43,18 +45,29 @@ void Categorizer::addToGroup(const vector<Mat>& pictures, double frame, double m
 		unordered_set<int> usedIndex;
 		for (auto& e : pictures)
 		{
-			bool matched = false;
+			bool deprecated = false;
 			size_t mostSimilarIndex = -1;
-			double mostSimilarValue = -1;
+			float mostSimilarValue = -1;
 			auto newMember = makeGroupMember(e, frame, millisecond);
 
 			for (size_t i = 0; i < _groups->size(); i++)
 			{
 				auto m1 = _groups->at(i)->members->at(0)->value;
 				auto src2 = e.clone();
-				auto diff = getHistDiff(m1, src2);
+
+				auto diff = getKnnDiff(m1, src2);
+				
+				if (diff < 0)
+				{
+					deprecated = true;
+					break;
+				}
+				
 				moreSimilar(mostSimilarValue, mostSimilarIndex, diff, i, usedIndex);
 			}
+
+			if (deprecated)
+				break;
 
 			if (mostSimilarIndex != -1 && isSimilar(mostSimilarValue))
 			{
@@ -215,6 +228,45 @@ int Categorizer::getHashDiff(const Mat& src1, const Mat& src2)
 
 }
 
+float Categorizer::getKnnDiff(const Mat& src1, const Mat& src2)
+{
+	Mat img1Gray, img2Gray;
+
+	cvtColor(src1, img1Gray, COLOR_BGR2GRAY);
+	cvtColor(src2, img2Gray, COLOR_BGR2GRAY);
+
+	vector<KeyPoint> keyPoints1, keyPoints2;
+
+	_matcher->detectKeypoints(img1Gray, keyPoints1);
+	_matcher->detectKeypoints(img2Gray, keyPoints2);
+
+	if (keyPoints1.empty())
+		return 1000;
+	if (keyPoints2.empty())
+		return -1;
+
+	Mat descriptor1, descriptor2;
+
+	_matcher->extractDescriptors(img1Gray, keyPoints1, descriptor1);
+	_matcher->extractDescriptors(img2Gray, keyPoints2, descriptor2);
+
+	vector<DMatch> matches;
+	size_t i = 0;
+	float total = 0.0;
+
+	_matcher->bestMatch(descriptor1, descriptor2, matches);
+
+	sort(matches.begin(), matches.end(),
+		[](DMatch a, DMatch b) -> bool { return a.distance < b.distance; });
+
+	for (; i < matches.size() && i < 10; i++)
+	{
+		total += matches[i].distance;
+	}
+
+	return total / static_cast<float>(i);
+}
+
 bool Categorizer::isSimilar(Scalar& mssim)
 {
 	int i = mssim[0] >= 0.5;
@@ -231,6 +283,11 @@ bool Categorizer::isSimilar(double diff)
 bool Categorizer::isSimilar(int hash)
 {
 	return hash <= 5;
+}
+
+bool Categorizer::isSimilar(float average)
+{
+	return average <= 300.0;
 }
 
 void Categorizer::moreSimilar(double& currentSimilarValue, size_t& currentSimilarValueIndex,
@@ -294,6 +351,28 @@ void Categorizer::moreSimilar(Scalar& currentSimilarValue, size_t& currentSimila
 		if (((newValue[0] > currentSimilarValue[0]) + 
 			(newValue[1] > currentSimilarValue[1]) + 
 			(newValue[2] > currentSimilarValue[2])) > 2)
+		{
+			currentSimilarValue = newValue;
+			currentSimilarValueIndex = newIndex;
+		}
+	}
+}
+
+void Categorizer::moreSimilar(float& currentSimilarValue, size_t& currentSimilarValueIndex,
+	const float& newValue, const size_t& newIndex,
+	const unordered_set<int>& usedIndex)
+{
+	if (usedIndex.find(newIndex) != usedIndex.end())
+		return;
+
+	if (currentSimilarValueIndex == -1)
+	{
+		currentSimilarValue = newValue;
+		currentSimilarValueIndex = newIndex;
+	}
+	else
+	{
+		if (newValue < currentSimilarValue)
 		{
 			currentSimilarValue = newValue;
 			currentSimilarValueIndex = newIndex;

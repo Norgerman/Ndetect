@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 #include <unordered_set>
+#include "knn_matcher.h"
+#include "make_unique.hpp"
 
 using namespace std;
 using namespace cv;
@@ -31,11 +33,13 @@ private:
 	Scalar getMSSIM(const Mat& i1, const Mat& i2);
 	double getHistDiff(const Mat& i1, const Mat& i2);
 	int getHashDiff(const Mat& src1, const Mat& src2);
+	float getKnnDiff(const Mat& src1, const Mat& src2);
 	Scalar getGroupMSSIM(const Mat& pic, const Group& g);
 
 	bool isSimilar(Scalar& mssim);
 	bool isSimilar(double diff);
 	bool isSimilar(int hash);
+	bool isSimilar(float average);
 
 	void moreSimilar(double& currentSimilarValue, size_t& currentSimilarValueIndex,
 		const double& newValue, const size_t& newIndex,
@@ -49,7 +53,12 @@ private:
 		const Scalar& newValue, const size_t& newIndex, 
 		const unordered_set<int>& usedIndex);
 
+	void moreSimilar(float& currentSimilarValue, size_t& currentSimilarValueIndex,
+		const float& newValue, const size_t& newIndex,
+		const unordered_set<int>& usedIndex);
+
 	shared_ptr<vector<shared_ptr<Group>>> _groups;
+	unique_ptr<KnnMatcher> _matcher;
 };
 
 shared_ptr<GroupMember> makeGroupMember(const Mat& value, double frame, double millisecond);
