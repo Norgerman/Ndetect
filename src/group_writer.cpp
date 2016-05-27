@@ -21,13 +21,16 @@ void GroupWriter::writeGroup(vector<shared_ptr<Group>>& groups, const string& ou
 	{
 		ss << outputDir << "/" << groupNamePrefix << i;
 		string gDir = ss.str();
+		
 		if (!fs::exists(gDir))
 		{
 			fs::create_directory(gDir);
 		}
+
 		for (auto& member : *g->members)
 		{
-			if (modifier.modifier(member->value))
+			Mat pic = member->value.clone();
+			if (modifier.modifier(pic))
 			{
 				ss << "/" << fixed << setprecision(3) << member->millisecond / 1000 << ".jpg";
 				string filename = ss.str();
@@ -35,7 +38,7 @@ void GroupWriter::writeGroup(vector<shared_ptr<Group>>& groups, const string& ou
 				ss.str(gDir);
 				ss.seekp(0, ios::end);
 				if (!fs::exists(filename))
-					imwrite(filename, member->value);
+					imwrite(filename, pic);
 			}
 		}
 		ss.clear();
